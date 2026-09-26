@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#044AB3">
+<title>Axiom Defense Intelligence — Enterprise Acquisition Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#044AB3;
+    --ink:#FFFFFF;
+    --muted:#B9CEF2;
+    --muted-dim:#87A9E0;
+    --line:rgba(255,255,255,0.18);
+    --line-soft:rgba(255,255,255,0.10);
+    --glass:rgba(255,255,255,0.06);
+    --r:22px;
+    --max:1300px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;background:#044AB3;}
+  html,body{min-height:100%;}
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:#044AB3;
+    z-index:-1;
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation-duration:.001ms !important;transition-duration:.001ms !important;}}
+  body{margin:0;background:var(--blue);color:var(--ink);font-family:'Inter',sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  a{color:inherit;text-decoration:none;}
+  svg{display:block;}
+  ::selection{background:#fff;color:var(--blue);}
+  :focus-visible{outline:1.5px solid #fff;outline-offset:3px;}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 40px;}
+  @media (max-width:680px){.wrap{padding:0 20px;}}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  /* ===== square-arrow button (signature component) ===== */
+  .btn{
+    display:inline-flex;align-items:stretch;
+    border:1px solid var(--line);
+    border-radius:6px;overflow:hidden;
+    font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500;
+    transition:background .2s ease,border-color .2s ease;
+  }
+  .btn .lbl{padding:13px 20px;display:flex;align-items:center;}
+  .btn .arw{
+    width:46px;display:flex;align-items:center;justify-content:center;
+    border-left:1px solid var(--line);
+    transition:background .2s ease;
+  }
+  .btn:hover{border-color:#fff;background:var(--glass);}
+  .btn:hover .arw{background:#fff;color:var(--blue);}
+  .btn.solid{background:#fff;color:var(--blue);border-color:#fff;}
+  .btn.solid .arw{border-left-color:rgba(4,74,179,0.25);}
+  .btn.solid:hover{background:#E8F0FF;}
+  .btn.solid:hover .arw{background:var(--blue);color:#fff;}
+
+  /* ===== header ===== */
+  header{position:sticky;top:0;z-index:100;background:#044AB3;}
+  .nav-row{display:flex;align-items:center;justify-content:space-between;padding:22px 40px;max-width:var(--max);margin:0 auto;}
+  @media (max-width:680px){.nav-row{padding:18px 20px;}}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;letter-spacing:0.06em;}
+  .brand .mk{width:16px;height:16px;position:relative;}
+  .brand .mk::before,.brand .mk::after{content:"";position:absolute;background:#fff;}
+  .brand .mk::before{width:16px;height:5px;top:0;left:0;}
+  .brand .mk::after{width:5px;height:16px;top:0;left:0;}
+  .menu-btn{display:flex;align-items:center;gap:12px;background:none;border:none;cursor:pointer;color:#fff;font-family:'IBM Plex Mono',monospace;font-size:13px;}
+  .menu-btn .grid4{display:grid;grid-template-columns:repeat(2,4px);gap:3px;}
+  .menu-btn .grid4 i{width:4px;height:4px;background:#fff;display:block;}
+
+  .overlay{position:fixed;inset:0;z-index:95;background:var(--blue);display:flex;flex-direction:column;justify-content:center;padding:0 40px;transform:translateY(-100%);transition:transform .5s cubic-bezier(.77,0,.18,1);}
+  .overlay.open{transform:translateY(0);}
+  .overlay ul{list-style:none;margin:0;padding:0;}
+  .overlay li{border-top:1px solid var(--line-soft);}
+  .overlay li:last-child{border-bottom:1px solid var(--line-soft);}
+  .overlay a{display:block;padding:20px 0;font-size:clamp(26px,5vw,44px);font-weight:600;transition:padding-left .3s ease,opacity .2s ease;}
+  .overlay a:hover{padding-left:14px;opacity:.65;}
+
+  /* ===== hero ===== */
+  .hero{padding:40px 0 90px;}
+  .orb-stage{display:flex;justify-content:center;padding:30px 0 70px;}
+  .orb{width:min(560px,86vw);}
+  @media (prefers-reduced-motion:reduce){.orb{animation:none;}}
+  h1.headline{font-size:clamp(34px,6.4vw,76px);font-weight:700;letter-spacing:-0.025em;line-height:1.05;max-width:900px;}
+  .hero-btn{margin-top:36px;}
+
+  /* ===== sections ===== */
+  section{padding:100px 0;}
+  .eyebrow{display:flex;align-items:center;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted-dim);margin-bottom:26px;}
+  .eyebrow::before{content:"";width:7px;height:7px;background:var(--muted-dim);display:block;}
+  h2.big{font-size:clamp(30px,5vw,58px);font-weight:700;letter-spacing:-0.02em;line-height:1.08;max-width:820px;}
+  h2.mid{font-size:clamp(26px,3.6vw,40px);font-weight:600;letter-spacing:-0.015em;line-height:1.15;}
+  .center{text-align:center;}
+  .center h2.big{margin:0 auto;}
+
+  /* ===== inset card (foundation) ===== */
+  .inset-wrap{margin-top:44px;display:grid;grid-template-columns:170px 1fr;gap:0;align-items:center;}
+  @media (max-width:820px){.inset-wrap{grid-template-columns:1fr;}}
+  .connector{height:200px;position:relative;}
+  .connector svg{width:100%;height:100%;overflow:visible;}
+  @media (max-width:820px){.connector{display:none;}}
+  .inset-card{
+    border:1px solid var(--line);border-radius:var(--r);
+    padding:46px;
+    background:linear-gradient(150deg,rgba(255,255,255,0.075),rgba(255,255,255,0.015));
+  }
+  @media (max-width:680px){.inset-card{padding:30px 24px;}}
+  .inset-card p{color:var(--muted);font-size:15.5px;max-width:640px;margin:22px 0 0;line-height:1.75;}
+
+  /* ===== logo grid ===== */
+  .logo-lede{margin:24px auto 0;max-width:660px;color:var(--muted);font-size:15px;}
+  .logo-grid{margin-top:52px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  @media (max-width:900px){.logo-grid{grid-template-columns:repeat(2,1fr);}}
+  .logo-card{
+    border:1px solid var(--line-soft);border-radius:14px;
+    background:var(--glass);
+    height:120px;display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:0.1em;
+    color:#fff;text-align:center;padding:0 18px;
+    transition:background .25s ease,border-color .25s ease;
+  }
+  .logo-card:hover{background:rgba(255,255,255,0.11);border-color:var(--line);}
+
+  /* ===== suite / carousel ===== */
+  .suite-head{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;flex-wrap:wrap;}
+  .suite-head p{color:var(--muted);max-width:520px;font-size:15.5px;margin:0;}
+  .rail{
+    margin-top:48px;display:flex;gap:20px;
+    overflow-x:auto;scroll-snap-type:x mandatory;
+    padding-bottom:8px;scrollbar-width:none;
+  }
+  .rail::-webkit-scrollbar{display:none;}
+  .card{
+    flex:0 0 clamp(280px,32%,400px);scroll-snap-align:start;
+    border:1px solid var(--line);border-radius:var(--r);
+    padding:26px;min-height:400px;
+    display:flex;flex-direction:column;
+    background:linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.015));
+    transition:border-color .25s ease;
+  }
+  .card:hover{border-color:#fff;}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;}
+  .chip{border:1px solid var(--line);border-radius:100px;padding:6px 14px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
+  .card-sq{width:26px;height:26px;background:#fff;border-radius:4px;}
+  .card-spacer{flex-grow:1;min-height:120px;}
+  .card h3{font-size:23px;font-weight:600;margin:0 0 12px;letter-spacing:-0.01em;}
+  .card p{color:var(--muted);font-size:14px;margin:0;line-height:1.65;}
+  .card .price{margin-top:20px;font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;padding-top:16px;border-top:1px solid var(--line-soft);display:flex;justify-content:space-between;align-items:baseline;}
+  .card .price small{font-size:10.5px;color:var(--muted-dim);font-weight:400;}
+  .rail-nav{margin-top:26px;display:flex;justify-content:flex-end;gap:10px;}
+  .rail-nav button{
+    width:46px;height:46px;border:1px solid var(--line);border-radius:6px;
+    background:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:background .2s ease,border-color .2s ease;
+  }
+  .rail-nav button:hover{background:#fff;color:var(--blue);border-color:#fff;}
+
+  /* ===== bracket panel ===== */
+  .bracket-panel{position:relative;border-radius:var(--r);padding:70px 50px;margin-top:20px;}
+  .bracket-panel::before,.bracket-panel::after{
+    content:"";position:absolute;width:70px;height:70px;border:1px solid var(--line);
+  }
+  .bracket-panel::before{top:0;left:0;border-right:none;border-bottom:none;border-radius:var(--r) 0 0 0;}
+  .bracket-panel::after{bottom:0;right:0;border-left:none;border-top:none;border-radius:0 0 var(--r) 0;}
+  @media (max-width:680px){.bracket-panel{padding:50px 24px;}}
+
+  /* ===== workflow list ===== */
+  .flow-list{margin-top:56px;}
+  .flow-item{padding:34px 0;border-top:1px solid var(--line-soft);display:grid;grid-template-columns:26px 1fr;gap:22px;}
+  .flow-item:last-child{border-bottom:1px solid var(--line-soft);}
+  .flow-item .dot{width:9px;height:9px;background:#fff;margin-top:9px;}
+  .flow-item h3{font-size:20px;font-weight:600;margin:0 0 10px;}
+  .flow-item p{margin:0;color:var(--muted);font-size:15px;max-width:680px;}
+
+  /* ===== news ===== */
+  .news-rail{margin-top:48px;display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;}
+  .news-rail::-webkit-scrollbar{display:none;}
+  .news-card{
+    flex:0 0 clamp(280px,32%,400px);scroll-snap-align:start;
+    border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+    display:flex;flex-direction:column;
+    transition:border-color .25s ease;
+  }
+  .news-card:hover{border-color:#fff;}
+  .news-thumb{height:190px;background:linear-gradient(150deg,rgba(255,255,255,0.14),rgba(255,255,255,0.02));border-bottom:1px solid var(--line-soft);position:relative;overflow:hidden;}
+  .news-thumb svg{position:absolute;inset:0;width:100%;height:100%;opacity:.5;}
+  .news-body{padding:24px;}
+  .news-meta{display:flex;gap:10px;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--muted-dim);text-transform:uppercase;letter-spacing:0.08em;}
+  .news-meta .tag{border:1px solid var(--line);border-radius:100px;padding:4px 11px;}
+  .news-card h4{margin:16px 0 0;font-size:17px;font-weight:600;line-height:1.4;}
+
+  /* ===== cta ===== */
+  .cta-tags{margin-top:34px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.12em;color:var(--muted-dim);text-transform:uppercase;}
+  .cta-body{margin-top:26px;max-width:600px;color:var(--muted);font-size:15px;}
+  .talk-row{margin-top:60px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;padding-top:44px;border-top:1px solid var(--line-soft);}
+  @media (max-width:820px){.talk-row{grid-template-columns:1fr;gap:24px;}}
+  .talk-row h3{font-size:clamp(24px,3.4vw,36px);font-weight:600;margin:0;letter-spacing:-0.015em;}
+  .nl{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;}
+  .nl input{flex:1;background:none;border:none;color:#fff;font-family:'Inter',sans-serif;font-size:14px;padding:15px 18px;}
+  .nl input::placeholder{color:var(--muted-dim);}
+  .nl input:focus{outline:none;}
+  .nl button{background:#fff;color:var(--blue);border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600;padding:0 26px;}
+  .nl button:hover{background:#E8F0FF;}
+  .nl-msg{margin-top:12px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;min-height:16px;color:var(--muted);}
+
+  /* ===== footer ===== */
+  footer{padding:80px 0 0;}
+  .foot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:36px;padding-bottom:60px;}
+  @media (max-width:820px){.foot-grid{grid-template-columns:1fr 1fr;row-gap:38px;}}
+  footer h5{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted-dim);margin:0 0 18px;}
+  footer ul{list-style:none;margin:0;padding:0;}
+  footer li{margin-bottom:11px;font-size:14px;}
+  footer a{color:var(--muted);}
+  footer a:hover{color:#fff;}
+  .wordmark{display:flex;align-items:center;justify-content:center;gap:26px;padding:20px 0 40px;}
+  .wordmark .wm-mark{width:clamp(40px,8vw,96px);height:clamp(40px,8vw,96px);position:relative;flex:none;}
+  .wordmark .wm-mark::before,.wordmark .wm-mark::after{content:"";position:absolute;background:#fff;}
+  .wordmark .wm-mark::before{left:0;top:0;width:100%;height:26%;}
+  .wordmark .wm-mark::after{left:0;top:0;width:26%;height:100%;}
+  .wordmark .wm-text{font-size:clamp(44px,13vw,180px);font-weight:800;letter-spacing:-0.03em;line-height:.9;}
+  .foot-bottom{border-top:1px solid var(--line-soft);padding:22px 0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted-dim);}
+  .foot-bottom a{color:var(--muted-dim);margin-left:16px;}
+  .foot-bottom a:hover{color:#fff;}
+
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  /* ============ ICONOGRAPHY ANIMATION ============ */
+
+  /* hero orb — layered counter-rotation */
+  .orb-stage{position:relative;}
+  .orb-ring-out{transform-origin:200px 200px;animation:spin 90s linear infinite;}
+  .orb-ring-in{transform-origin:200px 200px;animation:spinRev 60s linear infinite;}
+  .orb-shell-a{transform-origin:200px 200px;animation:spin 40s linear infinite;}
+  .orb-shell-b{transform-origin:200px 200px;animation:spinRev 52s linear infinite;}
+  .orb-shell-c{transform-origin:200px 200px;animation:spin 68s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @keyframes spinRev{to{transform:rotate(-360deg);}}
+  .orb-node{animation:nodePulse 3.2s ease-in-out infinite;transform-origin:center;}
+  .orb-node.n2{animation-delay:.5s;}
+  .orb-node.n3{animation-delay:1s;}
+  .orb-node.n4{animation-delay:1.5s;}
+  @keyframes nodePulse{0%,100%{opacity:.45;r:3;}50%{opacity:1;r:5;}}
+  .orb-core{animation:coreGlow 2.6s ease-in-out infinite;transform-origin:200px 200px;}
+  @keyframes coreGlow{0%,100%{opacity:.7;transform:scale(1);}50%{opacity:1;transform:scale(1.25);}}
+  .orb-halo{transform-origin:200px 200px;animation:halo 3.4s ease-out infinite;}
+  @keyframes halo{0%{opacity:.5;transform:scale(.6);}80%,100%{opacity:0;transform:scale(1.5);}}
+
+  /* generic draw-on-scroll for stroked paths */
+  .draw{stroke-dasharray:var(--len,600);stroke-dashoffset:var(--len,600);}
+  .in-view .draw{animation:drawIn 1.6s cubic-bezier(.6,0,.25,1) forwards;}
+  .in-view .draw.d2{animation-delay:.25s;}
+  .in-view .draw.d3{animation-delay:.5s;}
+  @keyframes drawIn{to{stroke-dashoffset:0;}}
+
+  /* bars grow up */
+  .bar{transform-origin:center bottom;transform:scaleY(0);}
+  .in-view .bar{animation:growBar .8s cubic-bezier(.2,.8,.3,1) forwards;}
+  .in-view .bar.b2{animation-delay:.12s;}
+  .in-view .bar.b3{animation-delay:.24s;}
+  .in-view .bar.b4{animation-delay:.36s;}
+  @keyframes growBar{to{transform:scaleY(1);}}
+
+  /* fade/scale in dots */
+  .pop{opacity:0;transform:scale(0);transform-origin:center;}
+  .in-view .pop{animation:popIn .5s cubic-bezier(.3,1.4,.5,1) .9s forwards;}
+  @keyframes popIn{to{opacity:1;transform:scale(1);}}
+
+  /* rotating dashed rings in news thumb */
+  .ring-spin{transform-origin:200px 95px;animation:spin 26s linear infinite;}
+  .ring-spin-rev{transform-origin:200px 95px;animation:spinRev 18s linear infinite;}
+
+  /* flow list dots — pulsing ring */
+  .flow-item .dot{position:relative;}
+  .flow-item .dot::after{
+    content:"";position:absolute;inset:-6px;border:1px solid rgba(255,255,255,.5);
+    animation:ringPulse 2.8s ease-out infinite;
+  }
+  .flow-item:nth-child(2) .dot::after{animation-delay:.7s;}
+  .flow-item:nth-child(3) .dot::after{animation-delay:1.4s;}
+  .flow-item:nth-child(4) .dot::after{animation-delay:2.1s;}
+  @keyframes ringPulse{0%{opacity:.7;transform:scale(.5);}70%,100%{opacity:0;transform:scale(1.6);}}
+
+  /* button arrow micro-interaction */
+  .btn .arw{transition:background .2s ease,color .2s ease;}
+  .btn .arw span{display:block;transition:transform .28s cubic-bezier(.3,1.2,.5,1);}
+  .btn:hover .arw span{transform:translate(3px,-3px);}
+  .rail-nav button{transition:background .2s ease,border-color .2s ease,transform .2s ease;}
+  .rail-nav button:hover{transform:translateY(-2px);}
+
+  /* card square — flips to a bracket on hover */
+  .card-sq{transition:transform .45s cubic-bezier(.4,1.3,.5,1),border-radius .45s ease;}
+  .card:hover .card-sq{transform:rotate(45deg) scale(.85);border-radius:2px;}
+
+  /* brand + footer marks */
+  .brand .mk{transition:transform .4s cubic-bezier(.3,1.3,.5,1);}
+  .brand:hover .mk{transform:rotate(-90deg);}
+  .wordmark .wm-mark{animation:markBreathe 5s ease-in-out infinite;}
+  @keyframes markBreathe{0%,100%{opacity:1;}50%{opacity:.55;}}
+
+  /* logo cards — corner tick draws in on hover */
+  .logo-card{position:relative;overflow:hidden;}
+  .logo-card::before,.logo-card::after{
+    content:"";position:absolute;width:14px;height:14px;
+    border-color:#fff;border-style:solid;border-width:0;
+    transition:border-width .25s ease,opacity .25s ease;opacity:0;
+  }
+  .logo-card::before{top:10px;left:10px;}
+  .logo-card::after{bottom:10px;right:10px;}
+  .logo-card:hover::before{border-top-width:1px;border-left-width:1px;opacity:1;}
+  .logo-card:hover::after{border-bottom-width:1px;border-right-width:1px;opacity:1;}
+
+  @media (prefers-reduced-motion:reduce){
+    .orb-ring-out,.orb-ring-in,.orb-shell-a,.orb-shell-b,.orb-shell-c,
+    .orb-node,.orb-core,.orb-halo,.ring-spin,.ring-spin-rev,
+    .wordmark .wm-mark,.flow-item .dot::after{animation:none !important;}
+    .draw{stroke-dashoffset:0 !important;}
+    .bar{transform:scaleY(1) !important;}
+    .pop{opacity:1 !important;transform:scale(1) !important;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-row">
+    <a href="index.html" class="brand"><span class="mk"></span>AXIOM</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
+      <span id="menuTxt">Menu</span>
+      <span class="grid4"><i></i><i></i><i></i><i></i></span>
+    </button>
+  </div>
+</header>
+
+<div class="overlay" id="overlay">
+  <div class="wrap" style="width:100%;">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="capabilities.html">Capabilities</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="perspectives.html">Perspectives</a></li>
+      <li><a href="investors.html">Investors</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+</div>
+
+<section class="hero" id="home">
+  <div class="wrap">
+    <div class="orb-stage">
+      <svg class="orb" viewBox="0 0 400 400" fill="none" aria-hidden="true">
+        <circle class="orb-ring-out" cx="200" cy="200" r="180" stroke="rgba(255,255,255,0.35)" stroke-width="1" stroke-dasharray="2 7"/>
+        <circle class="orb-ring-in" cx="200" cy="200" r="150" stroke="rgba(255,255,255,0.20)" stroke-width="1" stroke-dasharray="2 9"/>
+        <ellipse class="orb-shell-a" cx="200" cy="200" rx="180" ry="62" stroke="rgba(255,255,255,0.16)" stroke-width="1"/>
+        <ellipse class="orb-shell-b" cx="200" cy="200" rx="62" ry="180" stroke="rgba(255,255,255,0.16)" stroke-width="1"/>
+        <ellipse class="orb-shell-c" cx="200" cy="200" rx="180" ry="120" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+        <g class="orb-ring-out">
+          <circle class="orb-node n1" cx="200" cy="20" r="4" fill="#fff"/>
+          <circle class="orb-node n2" cx="200" cy="380" r="3" fill="#fff"/>
+          <circle class="orb-node n3" cx="20" cy="200" r="3" fill="#fff"/>
+          <circle class="orb-node n4" cx="380" cy="200" r="3" fill="#fff"/>
+        </g>
+        <circle class="orb-halo" cx="200" cy="200" r="18" stroke="#fff" stroke-width="1" fill="none"/>
+        <circle class="orb-core" cx="200" cy="200" r="5" fill="#fff"/>
+      </svg>
+    </div>
+    <h1 class="headline">Enterprise-Grade Acquisition Intelligence for Federal Contractors</h1>
+    <a href="contact.html" class="btn hero-btn">
+      <span class="lbl">Get in Touch</span>
+      <span class="arw"><span>↗</span></span>
+    </a>
+  </div>
+</section>
+
+<section id="foundation">
+  <div class="wrap">
+    <div class="eyebrow">Foundation</div>
+    <h2 class="big">Built for Federal Acquisition Workflows</h2>
+
+    <div class="inset-wrap">
+      <div class="connector" data-anim>
+        <svg viewBox="0 0 170 200" fill="none" preserveAspectRatio="none">
+          <path class="draw" style="--len:270;" d="M2 2 V100 H168" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+          <path class="draw d2" style="--len:100;" d="M2 198 V100" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <circle class="pop" cx="2" cy="2" r="3" fill="#fff"/>
+        </svg>
+      </div>
+      <div class="inset-card">
+        <h2 class="mid">From requirement to award within a single advisory engagement</h2>
+        <p>Axiom delivers a unified acquisition intelligence layer for organizations competing in the federal marketplace, combining compliance assurance, pricing strategy and negotiation support in one configurable practice. Each engagement is scoped for control, allowing contractors to define priorities, sequencing and execution logic while integrating with the capture and proposal teams already in place.</p>
+        <div style="margin-top:32px;">
+          <a href="about.html" class="btn"><span class="lbl">The Practice</span><span class="arw"><span>↗</span></span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="sectors">
+  <div class="wrap center">
+    <h2 class="big">Built for the full federal market</h2>
+    <p class="logo-lede">Axiom advisory work spans the agencies, contract vehicles and organization types that define federal procurement — from major defense programs to small business set-asides.</p>
+    <div class="logo-grid">
+      <div class="logo-card">DEPARTMENT<br>OF DEFENSE</div>
+      <div class="logo-card">FEDERAL CIVILIAN<br>AGENCIES</div>
+      <div class="logo-card">PRIME<br>CONTRACTORS</div>
+      <div class="logo-card">SUBCONTRACTORS</div>
+      <div class="logo-card">SMALL BUSINESS<br>SET-ASIDES</div>
+      <div class="logo-card">GWAC &amp; IDIQ<br>VEHICLES</div>
+      <div class="logo-card">GSA<br>SCHEDULES</div>
+      <div class="logo-card">JOINT<br>VENTURES</div>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="wrap">
+    <div class="suite-head">
+      <h2 class="big" style="max-width:520px;">Advisory Suite</h2>
+      <p>A complete set of configurable advisory engagements, built to give contractors an acquisition advantage across the full pursuit lifecycle — from compliance review through pricing, negotiation and award.</p>
+    </div>
+
+    <div class="rail" id="rail">
+      <div class="card">
+        <div class="card-top"><span class="chip">Compliance</span><span class="card-sq"></span></div>
+        <div class="card-spacer"></div>
+        <h3><a href="services.html#clin-0001">Proposal Compliance Assurance</a></h3>
+        <p>A comprehensive compliance and evaluator-readiness assessment for active federal solicitations, reviewed the way the government will read it.</p>
+        <div class="price">$25,000 <small>CLIN 0001 · PER SOLICITATION</small></div>
+      </div>
+      <div class="card">
+        <div class="card-top"><span class="chip">Strategy</span><span class="card-sq"></span></div>
+        <div class="card-spacer"></div>
+        <h3><a href="services.html#clin-0002">Competitive Proposal Strategy</a></h3>
+        <p>Strategic advisory for organizations pursuing high-value Department of Defense opportunities, aligning technical approach and price to win.</p>
+        <div class="price">$50,000 <small>CLIN 0002 · PER PURSUIT</small></div>
+      </div>
+      <div class="card">
+        <div class="card-top"><span class="chip">Capture</span><span class="card-sq"></span></div>
+        <div class="card-spacer"></div>
+        <h3><a href="services.html#clin-0003">Capture-to-Award Executive Advisory</a></h3>
+        <p>Ongoing executive guidance for organizations managing multiple pursuits across the federal market, carried from capture through award.</p>
+        <div class="price">$20,000+ <small>CLIN 0003 · PER MONTH</small></div>
+      </div>
+      <div class="card">
+        <div class="card-top"><span class="chip">Rescue</span><span class="card-sq"></span></div>
+        <div class="card-spacer"></div>
+        <h3><a href="services.html#clin-0004">Emergency Proposal Rescue</a></h3>
+        <p>Rapid-response support for organizations facing critical proposal deadlines, mobilized within days of engagement.</p>
+        <div class="price">$75K–150K <small>CLIN 0004 · PER ENGAGEMENT</small></div>
+      </div>
+    </div>
+
+    <div class="rail-nav">
+      <button id="railPrev" aria-label="Previous">←</button>
+      <button id="railNext" aria-label="Next">→</button>
+    </div>
+  </div>
+</section>
+
+<section id="realworld">
+  <div class="wrap">
+    <div class="bracket-panel">
+      <h2 class="big">Built for real-world federal procurement</h2>
+      <p style="color:var(--muted);max-width:640px;margin-top:24px;font-size:15.5px;">Axiom enables contractors to operate inside structured, compliant acquisition environments. From requirement analysis to final negotiation, every engagement is designed to integrate with the capture and proposal workflows your organization already runs.</p>
+      <div style="margin-top:34px;">
+        <a href="capabilities.html" class="btn"><span class="lbl">Capabilities</span><span class="arw"><span>↗</span></span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="workflows">
+  <div class="wrap">
+    <h2 class="big">At the cutting-edge of federal acquisition</h2>
+
+    <div class="flow-list">
+      <div class="flow-item">
+        <span class="dot"></span>
+        <div>
+          <h3>Compliance &amp; Evaluator Readiness</h3>
+          <p>Review of active solicitations with every volume checked against Section L and Section M before submission — closing compliance gaps before they become disqualifying risk, across complex requirement structures and multi-volume responses.</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <span class="dot"></span>
+        <div>
+          <h3>Pricing &amp; Cost Strategy</h3>
+          <p>Pricing structures built to survive negotiation, not just submission. Aligned to technical approach, calibrated against realistic competitive ranges, and defensible under government cost analysis.</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <span class="dot"></span>
+        <div>
+          <h3>Capture &amp; Pipeline Management</h3>
+          <p>Ongoing executive guidance across multiple concurrent pursuits. Supports opportunity qualification, teaming decisions and configurable capture workflows tailored to your organization.</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <span class="dot"></span>
+        <div>
+          <h3>Negotiation &amp; Award Support</h3>
+          <p>Direct support through negotiation and award. Designed to hold position on price and terms, resolve avoidable issues early, and carry institutional knowledge into the next pursuit.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="news">
+  <div class="wrap">
+    <h2 class="big">Perspectives</h2>
+    <div class="news-rail">
+      <div class="news-card">
+        <div class="news-thumb" data-anim><svg viewBox="0 0 400 190" fill="none"><path class="draw" style="--len:520;" d="M0 150 L100 90 L200 130 L300 60 L400 100" stroke="#fff" stroke-width="1.5"/><circle class="pop" cx="300" cy="60" r="4" fill="#fff"/></svg></div>
+        <div class="news-body">
+          <div class="news-meta"><span class="tag">Advisory</span><span>6.02.26</span></div>
+          <h4>Why proposals fail on compliance before they are ever evaluated on merit</h4>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-thumb" data-anim><svg viewBox="0 0 400 190" fill="none"><rect class="bar" x="60" y="90" width="30" height="70" fill="#fff"/><rect class="bar b2" x="120" y="60" width="30" height="100" fill="#fff"/><rect class="bar b3" x="180" y="105" width="30" height="55" fill="#fff"/><rect class="bar b4" x="240" y="40" width="30" height="120" fill="#fff"/></svg></div>
+        <div class="news-body">
+          <div class="news-meta"><span class="tag">Strategy</span><span>5.18.26</span></div>
+          <h4>Pricing to win the evaluation and pricing to survive negotiation are different exercises</h4>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-thumb" data-anim><svg viewBox="0 0 400 190" fill="none"><circle class="ring-spin" cx="200" cy="95" r="60" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 6"/><circle class="ring-spin-rev" cx="200" cy="95" r="26" stroke="#fff" stroke-width="1.5" stroke-dasharray="4 5"/><circle class="pop" cx="200" cy="95" r="4" fill="#fff"/></svg></div>
+        <div class="news-body">
+          <div class="news-meta"><span class="tag">Capture</span><span>4.29.26</span></div>
+          <h4>What gets lost when an experienced acquisition professional retires</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cta">
+  <div class="wrap">
+    <div class="eyebrow">Let's Work</div>
+    <h2 class="big">Start your next pursuit with Axiom</h2>
+    <a href="mailto:briefing@axiomdefenseintel.com" class="btn" style="margin-top:34px;"><span class="lbl">Get in Touch</span><span class="arw"><span>↗</span></span></a>
+    <div class="cta-tags">COMPLIANCE · PRICING · NEGOTIATION · CAPTURE &amp; AWARD</div>
+    <p class="cta-body">A unified acquisition advisory layer designed for organizations competing at scale. Our team works directly with your proposal and capture leads to deliver strategy built for real federal procurement.</p>
+
+    <div class="talk-row">
+      <h3>Talk with an advisor at Axiom</h3>
+      <div>
+        <form class="nl" id="nlForm">
+          <input type="email" id="nlEmail" placeholder="E-mail Address" required>
+          <button type="submit">Subscribe</button>
+        </form>
+        <div class="nl-msg" id="nlMsg"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <h5>Company</h5>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="capabilities.html">Capabilities</a></li>
+          <li><a href="investors.html">Investors</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Services</h5>
+        <ul>
+          <li><a href="services.html#clin-0001">Proposal Compliance Assurance</a></li>
+          <li><a href="services.html#clin-0002">Competitive Proposal Strategy</a></li>
+          <li><a href="services.html#clin-0003">Capture-to-Award Advisory</a></li>
+          <li><a href="services.html#clin-0004">Emergency Proposal Rescue</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Media</h5>
+        <ul>
+          <li><a href="perspectives.html">Perspectives</a></li>
+          <li><a href="perspectives.html">Newsroom</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Connect</h5>
+        <ul>
+          <li><a href="#" onclick="return false;">LinkedIn</a></li>
+          <li><a href="#" onclick="return false;">X (Twitter)</a></li>
+          <li><a href="mailto:briefing@axiomdefenseintel.com">briefing@axiomdefenseintel.com</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="wordmark">
+      <span class="wm-mark"></span>
+      <span class="wm-text">AXIOM</span>
+    </div>
+
+    <div class="foot-bottom">
+      <span>©2026 Axiom Defense Intelligence. All Rights Reserved.</span>
+      <span><a href="#" onclick="return false;">Privacy Policy</a><a href="#" onclick="return false;">Terms &amp; Conditions</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const menuBtn=document.getElementById('menuBtn');
+  const overlay=document.getElementById('overlay');
+  const menuTxt=document.getElementById('menuTxt');
+  menuBtn.addEventListener('click',()=>{
+    const open=overlay.classList.toggle('open');
+    menuTxt.textContent=open?'Close':'Menu';
+    menuBtn.setAttribute('aria-expanded',open);
+  });
+  overlay.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+    overlay.classList.remove('open');menuTxt.textContent='Menu';
+  }));
+
+  const rail=document.getElementById('rail');
+  const step=()=>Math.min(rail.clientWidth*0.8,420);
+  document.getElementById('railNext').addEventListener('click',()=>rail.scrollBy({left:step(),behavior:'smooth'}));
+  document.getElementById('railPrev').addEventListener('click',()=>rail.scrollBy({left:-step(),behavior:'smooth'}));
+
+  document.getElementById('nlForm').addEventListener('submit',(e)=>{
+    e.preventDefault();
+    const v=document.getElementById('nlEmail').value;
+    const m=document.getElementById('nlMsg');
+    if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){
+      m.textContent="Thanks for subscribing. You're now connected to Axiom's latest advisory updates.";
+      document.getElementById('nlForm').reset();
+    }else{
+      m.textContent="Something doesn't look right. Please check your email address and try again.";
+    }
+  });
+
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // fire iconography animations when each graphic scrolls into view
+  const animIO=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in-view');
+      animIO.unobserve(e.target);
+    }
+  }),{threshold:.35});
+  document.querySelectorAll('[data-anim]').forEach(el=>animIO.observe(el));
+</script>
+
+</body>
+</html>
